@@ -152,6 +152,7 @@ class InputConnect:
 
 
 class Report:
+    # Переменные необходимы для функции, которая создает отчет в pdf
     heads1 = []
     heads2 = []
     job_name = ''
