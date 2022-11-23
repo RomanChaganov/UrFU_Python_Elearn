@@ -152,6 +152,7 @@ class InputConnect:
 
 
 class Report:
+    # Поля необходимые для метода generate_pdf
     heads1 = []
     heads2 = []
     job_name = ''
