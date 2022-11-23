@@ -79,7 +79,6 @@ class DataSet:
 
 
 class InputConnect:
-    type_output = ''
     def __init__(self):
         params = InputConnect.get_params()
         data_set = DataSet(params[0])
@@ -87,7 +86,6 @@ class InputConnect:
 
     @staticmethod
     def get_params():
-        InputConnect.type_output = input('Введите данные для печати: ')
         file_name = input('Введите название файла: ')
         job_name = input('Введите название профессии: ')
         return file_name, job_name
@@ -161,11 +159,9 @@ class Report:
     def __init__(self, data_list, job_name):
         Report.job_name = job_name
         Report.data_list = data_list
-        if InputConnect.type_output == 'Вакансии':
-            Report.generate_excel(data_list, job_name)
-        else:
-            Report.generate_image(data_list, job_name)
-            Report.generate_pdf()
+        Report.generate_excel(data_list, job_name)
+        Report.generate_image(data_list, job_name)
+        Report.generate_pdf()
 
     @staticmethod
     def as_text(line):
@@ -293,6 +289,3 @@ class Report:
 
         config = pdfkit.configuration(wkhtmltopdf=r'C:\source\wkhtmltox\bin\wkhtmltopdf.exe')
         pdfkit.from_string(pdf_template, 'report.pdf', configuration=config, options={'enable-local-file-access': None})
-
-
-InputConnect()
