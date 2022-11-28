@@ -11,6 +11,12 @@ from jinja2 import Environment, FileSystemLoader
 
 
 def exit_with_print(line):
+    """
+    Функция выводит строку и завершает программу
+
+    Args:
+        line (str): входная строка
+    """
     print(line)
     exit()
 
@@ -30,19 +36,66 @@ currency_to_rub = {
 
 
 class Salary:
+    """
+    Класс, который хранит поля, связанные с зарплатой
+
+    Attributes:
+        salary_from (int): Минимальная граница оклада
+        salary_to (int): Максимальная граница оклада
+        salary_currency (str): Индентификатор валюты
+    """
+
     def __init__(self, salary_from, salary_to, salary_currency):
+        """
+        В конструкторе устанавливаются основные поля зарплаты,
+        а так же поле, конвертированной в рубль иностранной валюты
+
+        Args:
+            salary_from (str): Минимальная граница оклада
+            salary_to (str): Максимальная граница оклада
+            salary_currency (str): Индентификатор валюты
+        """
+        self.salary_from = salary_from
+        self.salary_to = salary_to
+        self.salary_currency = salary_currency
         salary = Salary.currency_translate(salary_from, salary_to, salary_currency)
         self.salary_ru = int((salary[0] + salary[1]) / 2)
 
     @staticmethod
     def currency_translate(salary_from, salary_to, salary_currency):
+        """
+        Метод переводит зарплату в иностранной ваюты в рубли
+
+        Args:
+            salary_from (str): Минимальная граница оклада
+            salary_to (str): Максимальная граница оклада
+            salary_currency (str): Индентификатор валюты
+
+        Returns:
+            (int, int): Кортеж, в котором хранится минимальная и максимальная зарплата в рублях
+        """
         salary_from = int(math.trunc(float(salary_from))) * currency_to_rub[salary_currency]
         salary_to = int(math.trunc(float(salary_to))) * currency_to_rub[salary_currency]
         return salary_from, salary_to
 
 
 class Vacancy:
+    """
+    Класс, который хранит поля, связанные с вакансией
+
+    Attributes:
+        name (str): Название вакансий
+        salary (Salary): Объект Salary
+        area_name (str): Название региона
+        published_at (str): Дата публикации
+    """
     def __init__(self, dictionary):
+        """
+        В конструкторе устанавливаются основные поля для вакансии
+
+        Args:
+            dictionary (dict): Словарь, содержащий данные о вакансии
+        """
         self.name = dictionary['name']
         self.salary = Salary(dictionary['salary_from'], dictionary['salary_to'], dictionary['salary_currency'])
         self.area_name = dictionary['area_name']
@@ -50,12 +103,35 @@ class Vacancy:
 
 
 class DataSet:
+    """
+    Класс отвечает за чтение и обработку данных из CSV файла
+
+    Attributes:
+        file_name (str): Имя файла
+        vacancies_objects (dict): Список из объектов Vacancy
+    """
     def __init__(self, file_name):
+        """
+        В конструкторе устанавливаются основные поля для набора данных
+
+        Args:
+            file_name (str): Имя входного файла
+        """
         self.file_name = file_name
         self.vacancies_objects = DataSet.prepare_data(file_name)
 
     @staticmethod
     def read_csv(file_name):
+        """
+        Метод считывает данные из CSV файла
+
+        Args:
+            file_name (str): Имя входного файла
+
+        Returns:
+            (dict, dict): Кортеж из списка названий колонок и
+            списка непосредственно данных о вакансиях
+        """
         reader_csv = csv.reader(open(file_name, encoding='utf_8_sig'))
         list_data = [x for x in reader_csv]
         if len(list_data) == 0:
@@ -68,6 +144,15 @@ class DataSet:
 
     @staticmethod
     def prepare_data(file_name):
+        """
+        Метод обрабатывает данные из CSV файла и преобразует их в список вакансий
+
+        Args:
+            file_name (str): Имя входного файла
+
+        Returns:
+            (dict): Список с объектами Vacancy
+        """
         columns, vacancies = DataSet.read_csv(file_name)
         list_vacancies = []
         for row in vacancies:
@@ -79,19 +164,40 @@ class DataSet:
 
 
 class InputConnect:
+    """
+    Класс отвечает за работу с входными параметрами и за печать набора данных
+    """
     def __init__(self):
+        """
+        Конструктор запускает метод, получающий входные данные, создает
+        набор данных и запускает метод по печати этого набора
+        """
         params = InputConnect.get_params()
         data_set = DataSet(params[0])
         InputConnect.print_data(data_set.vacancies_objects, params[1])
 
     @staticmethod
     def get_params():
+        """
+        Метод получает входные данные
+
+        Returns:
+            (str, str): Кортеж входных параметров
+        """
         file_name = input('Введите название файла: ')
         job_name = input('Введите название профессии: ')
         return file_name, job_name
 
     @staticmethod
     def print_data(list_vacancies, job_name):
+        """
+        Метод обрабатывает набор данных и печатает их. Так же
+        метод запускает формирование графиков и отчетов
+
+        Args:
+            list_vacancies (dict): Список с данными о вакансиях
+            job_name (str): Вакансия, по которой будет вестись статистика
+        """
         years = set()
         for vacancy in list_vacancies:
             years.add(int(datetime.strptime(vacancy.published_at, '%Y-%m-%dT%H:%M:%S%z').strftime('%Y')))
@@ -136,9 +242,6 @@ class InputConnect:
         vacs_by_cities = dict(sorted(vacs_count.items(), key=lambda x: x[1], reverse=True))
         vacs_by_cities = dict(list(vacs_by_cities.items())[:10])
 
-        data_list = [salary_by_years, vacs_by_years, job_salary_by_years, job_count_by_years, salary_by_cities,
-                     vacs_by_cities]
-
         print('Динамика уровня зарплат по годам:', salary_by_years)
         print('Динамика количества вакансий по годам:', vacs_by_years)
         print('Динамика уровня зарплат по годам для выбранной профессии:', job_salary_by_years)
@@ -146,10 +249,16 @@ class InputConnect:
         print('Уровень зарплат по городам (в порядке убывания):', salary_by_cities)
         print('Доля вакансий по городам (в порядке убывания):', vacs_by_cities)
 
+        data_list = [salary_by_years, vacs_by_years, job_salary_by_years, job_count_by_years, salary_by_cities,
+                     vacs_by_cities]
+
         Report(data_list, job_name)
 
 
 class Report:
+    """
+    Класс отвечает за формирование графико и отчетов в виде xlsx, pdf
+    """
     # Поля необходимые для метода generate_pdf
     heads1 = []
     heads2 = []
@@ -157,6 +266,15 @@ class Report:
     data_list = []
 
     def __init__(self, data_list, job_name):
+        """
+        В конструкторе устанавливаются поля, необходимые для
+        метода generate_pdf, а так же происходит запуск остальных
+        методов класса
+
+        Args:
+            data_list (dict): Список списков значений статистики
+            job_name (str): Вакансия, по которой будет вестись статистика
+        """
         Report.job_name = job_name
         Report.data_list = data_list
         Report.generate_excel(data_list, job_name)
@@ -165,12 +283,28 @@ class Report:
 
     @staticmethod
     def as_text(line):
+        """
+        Метод преобразует переменную в строку
+
+        Args:
+            line: Переменная, которую нужно перевести в строку
+
+        Returns:
+            (str): Переменная в виде строки
+        """
         if line is None:
             return ''
         return str(line)
 
     @staticmethod
     def create_sheet2(sheet2, data_list):
+        """
+        Метод формирует вторую вкладу таблицы
+
+        Args:
+            sheet2: Объект вкладки WorkSheet
+            data_list (dict): Список списков значений статистики
+        """
         heads2 = ['Город', 'Уровень зарплат', 'Город', 'Доля вакансий']
         Report.heads2 = heads2
 
@@ -186,7 +320,13 @@ class Report:
         sheet2.insert_cols(3, 1)
 
     @staticmethod
-    def generate_excel(data_list, job_name):
+    def generate_excel():
+        """
+        Метод, который формирует отчет в виде xlsx
+
+        """
+        data_list = Report.data_list
+        job_name = Report.job_name
         wb = Workbook()
         sheet1 = wb.active
         sheet1.title = 'Статистика по годам'
@@ -219,7 +359,13 @@ class Report:
         wb.save('report.xlsx')
 
     @staticmethod
-    def generate_image(data_list, job_name):
+    def generate_image():
+        """
+        Метод создает графики по статистике
+
+        """
+        data_list = Report.data_list
+        job_name = Report.job_name
         fig = plt.figure()
         width = 0.4
         x_nums = np.arange(len(data_list[0].keys()))
@@ -269,6 +415,10 @@ class Report:
 
     @staticmethod
     def generate_pdf():
+        """
+        Метод формирует отчет в виде pdf
+
+        """
         salary_key = list(Report.data_list[4])
         vacs_key = list(Report.data_list[5])
         vacs_by_cities = [str('{0:.2%}'.format(float(x))).replace('.', ',') for x in list(Report.data_list[5].values())]

@@ -7,6 +7,9 @@ from prettytable import PrettyTable
 
 
 class CommonTools:
+    """
+    Класс содержит данные и методы, которые используются в остальных классах
+    """
     rus_names = {'Название': 'name', 'Описание': 'description', 'Навыки': 'key_skills', 'Опыт работы': 'experience_id',
                  'Премиум-вакансия': 'premium', 'Компания': 'employer_name', 'Оклад': 'salary_from',
                  'Верхняя граница вилки оклада': 'salary_to', 'Оклад указан до вычета налогов': 'salary_gross',
@@ -17,11 +20,27 @@ class CommonTools:
 
     @staticmethod
     def exit_with_print(line):
+        """
+        Функция выводит строку и завершает программу
+
+        Args:
+            line (str): входная строка
+        """
         print(line)
         exit()
 
     @staticmethod
     def edit_line(line):
+        """
+        Метод удаляет html теги из строки, убирает перевод строки
+        на новою строчку и переводит 'True' 'False' на русский язык
+
+        Args:
+            line (str): входная строка
+
+        Returns:
+            (str): Отредактированная строка
+        """
         string = re.sub(r'<[^>]+>', '', line)
         if '\n' not in string:
             string = ' '.join(string.split())
@@ -31,11 +50,29 @@ class CommonTools:
 
 
 class Salary:
+    """
+    Класс, который хранит поля, связанные с зарплатой
+
+    Attributes:
+        salary_from (int): Минимальная граница оклада
+        salary_to (int): Максимальная граница оклада
+        salary_gross (str): Оклад указан до вычета налогов
+        salary_currency (str): Индентификатор валюты
+    """
     currency_to_rub = {
         "Манаты": 35.68, "Белорусские рубли": 23.91, "Евро": 59.90, "Грузинский лари": 21.74, "Киргизский сом": 0.76,
         "Тенге": 0.13, "Рубли": 1, "Гривны": 1.64, "Доллары": 60.66, "Узбекский сум": 0.0055}
 
     def __init__(self, salary_from, salary_to, salary_gross, salary_currency):
+        """
+        В конструкторе устанавливаются основные поля зарплаты
+
+        Args:
+            salary_from (str): Минимальная граница оклада
+            salary_to (str): Максимальная граница оклада
+            salary_gross (str): Оклад указан до вычета налогов
+            salary_currency (str): Индентификатор валюты
+        """
         self.salary_from = salary_from
         self.salary_to = salary_to
         self.salary_gross = salary_gross
@@ -43,18 +80,49 @@ class Salary:
 
     @staticmethod
     def currency_translate(salary_from, salary_to, salary_currency):
+        """
+        Метод переводит зарплату в иностранной ваюты в рубли
+
+        Args:
+            salary_from (str): Минимальная граница оклада
+            salary_to (str): Максимальная граница оклада
+            salary_currency (str): Индентификатор валюты
+
+        Returns:
+            (int, int): Кортеж, в котором хранится минимальная и максимальная зарплата в рублях
+        """
         salary_from = int(math.trunc(float(salary_from))) * Salary.currency_to_rub[salary_currency]
         salary_to = int(math.trunc(float(salary_to))) * Salary.currency_to_rub[salary_currency]
         return salary_from, salary_to
 
 
 class Vacancy:
+    """
+    Класс, который хранит поля, связанные с вакансией
+
+    Attributes:
+        name (str): Название вакансий
+        description (str): Описание
+        key_skills (str): Навыки
+        experience_id (str): Опыт работы
+        premium (str): Премиум-вакансия
+        employer_name (str): Компания
+        salary (Salary): Объект Salary
+        area_name (str): Название региона
+        published_at (str): Дата публикации
+    """
     experience_rus = {'noExperience': 'Нет опыта',
                       'between1And3': 'От 1 года до 3 лет',
                       'between3And6': 'От 3 до 6 лет',
                       'moreThan6': 'Более 6 лет'}
 
     def __init__(self, dictionary):
+        """
+        В конструкторе устанавливаются основные поля для вакансии
+
+        Args:
+            dictionary (dict): Словарь, содержащий данные о вакансии
+        """
         self.name = dictionary['name']
         self.description = dictionary['description']
         self.key_skills = dictionary['key_skills']
@@ -68,7 +136,20 @@ class Vacancy:
 
 
 class DataSet:
+    """
+    Класс отвечает за чтение и обработку данных из CSV файла
+
+    Attributes:
+        file_name (str): Имя файла
+        vacancies_objects (dict): Список из объектов Vacancy
+    """
     def __init__(self, file_name):
+        """
+        В конструкторе устанавливаются основные поля для набора данных
+
+        Args:
+            file_name (str): Имя входного файла
+        """
         self.file_name = file_name
         data_tuple = DataSet.read_csv(file_name)
         resume_dict = DataSet.csv_filter(data_tuple[0], data_tuple[1])
@@ -79,6 +160,17 @@ class DataSet:
 
     @staticmethod
     def read_csv(file_name):
+        """
+        Метод считывает данные из CSV файла и проверяет на
+        налицие данных
+
+        Args:
+            file_name (str): Имя входного файла
+
+        Returns:
+            (dict, dict): Кортеж из списка названий колонок и
+            списка непосредственно данных о вакансиях
+        """
         reader_csv = csv.reader(open(file_name, encoding='utf_8_sig'))
         list_data = [x for x in reader_csv]
         if len(list_data) == 0:
@@ -91,6 +183,17 @@ class DataSet:
 
     @staticmethod
     def csv_filter(reader, list_naming):
+        """
+        Метод обрабатывает данные из CSV файла и преобразует их в список
+        словарей
+
+        Args:
+            reader (dict): Данные вакансий
+            list_naming (dict): Название колонок таблицы
+
+        Returns:
+            (dict): Список словарей вакансий
+        """
         resumes = []
         sentences = {}
         for resume in reader:
@@ -102,13 +205,26 @@ class DataSet:
 
 
 class InputConnect:
+    """
+    Класс отвечает за работу с входными параметрами, обработку данных
+    """
     def __init__(self):
+        """
+        Конструктор запускает метод, получающий входные данные, создает
+        набор данных и запускает метод по печати этого набора
+        """
         params = InputConnect.get_params()
         data_set = DataSet(params[0])
         InputConnect.print_vacancies(data_set, params[1], params[2], params[3], params[4], params[5])
 
     @staticmethod
     def get_params():
+        """
+        Метод получает входные данные
+
+        Returns:
+            (str, str): Кортеж входных параметров
+        """
         file_name = input('Введите название файла: ')
         parameter = input('Введите параметр фильтрации: ')
         sort_parametr = input('Введите параметр сортировки: ')
@@ -142,7 +258,6 @@ class InputConnect:
         salary_to = math.trunc(float(salary_to))
         return f"{salary_from} - {salary_to} ({currency}) ({is_gross})"
 
-
     @staticmethod
     def formatter(row):
         new_dict = {}
@@ -150,13 +265,13 @@ class InputConnect:
         dict_names = dict_names[:7] + dict_names[10:]
         for key in dict_names:
             if key == 'salary_from':
-                new_dict[key] = InputConnect.salary_format(row.salary.salary_from, row.salary.salary_to, row.salary.salary_gross,
-                                           row.salary.salary_currency)
+                new_dict[key] = InputConnect.salary_format(row.salary.salary_from, row.salary.salary_to,
+                                                           row.salary.salary_gross,
+                                                           row.salary.salary_currency)
                 continue
             else:
                 new_dict[key] = getattr(row, key)
         return new_dict
-
 
     @staticmethod
     def do_filter(data, filter_list):
@@ -180,7 +295,8 @@ class InputConnect:
                         k = k + 1
                 return k == len(parameters)
             if parameter[0] == 'Дата публикации вакансии':
-                return datetime.strptime(row['published_at'], '%Y-%m-%dT%H:%M:%S%z').strftime('%d.%m.%Y') == parameter[1]
+                return datetime.strptime(row['published_at'], '%Y-%m-%dT%H:%M:%S%z').strftime('%d.%m.%Y') == parameter[
+                    1]
             return row[CommonTools.rus_names[parameter[0]]] == parameter[1]
 
         filtered_list = list(filter(for_filter, data))
@@ -216,7 +332,6 @@ class InputConnect:
         else:
             return data
 
-
     @staticmethod
     def create_data(data, filter_list, sort, reverse):
         result_list = []
@@ -234,7 +349,8 @@ class InputConnect:
             salary[0] = str(salary_from)
             salary[2] = str(salary_to)
             sorted_list[i]['salary_from'] = ' '.join(salary)
-            sorted_list[i]['published_at'] = datetime.strptime(sorted_list[i]['published_at'], '%Y-%m-%dT%H:%M:%S%z').strftime('%d.%m.%Y')
+            sorted_list[i]['published_at'] = datetime.strptime(sorted_list[i]['published_at'],
+                                                               '%Y-%m-%dT%H:%M:%S%z').strftime('%d.%m.%Y')
 
             new_list = list(sorted_list[i].values())
             for j in range(len(new_list)):
@@ -243,7 +359,6 @@ class InputConnect:
             sorted_list[i] = new_list
             sorted_list[i].insert(0, str(i + 1))
         return sorted_list
-
 
     @staticmethod
     def print_vacancies(data_set, filter_list, sort, reverse, indexes, fields_list):
