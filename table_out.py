@@ -54,8 +54,8 @@ class Salary:
     Класс, который хранит поля, связанные с зарплатой
 
     Attributes:
-        salary_from (int): Минимальная граница оклада
-        salary_to (int): Максимальная граница оклада
+        salary_from (str): Минимальная граница оклада
+        salary_to (str): Максимальная граница оклада
         salary_gross (str): Оклад указан до вычета налогов
         salary_currency (str): Индентификатор валюты
     """
@@ -141,7 +141,7 @@ class DataSet:
 
     Attributes:
         file_name (str): Имя файла
-        vacancies_objects (dict): Список из объектов Vacancy
+        vacancies_objects (list): Список из объектов Vacancy
     """
     def __init__(self, file_name):
         """
@@ -168,7 +168,7 @@ class DataSet:
             file_name (str): Имя входного файла
 
         Returns:
-            (dict, dict): Кортеж из списка названий колонок и
+            (list, list): Кортеж из списка названий колонок и
             списка непосредственно данных о вакансиях
         """
         reader_csv = csv.reader(open(file_name, encoding='utf_8_sig'))
@@ -188,11 +188,11 @@ class DataSet:
         словарей
 
         Args:
-            reader (dict): Данные вакансий
-            list_naming (dict): Название колонок таблицы
+            reader (list): Данные вакансий
+            list_naming (list): Название колонок таблицы
 
         Returns:
-            (dict): Список словарей вакансий
+            (list): Список словарей вакансий
         """
         resumes = []
         sentences = {}
@@ -249,6 +249,18 @@ class InputConnect:
 
     @staticmethod
     def salary_format(salary_from, salary_to, salary_gross, salary_currency):
+        """
+        Метод объединяет всю информацию об окладе в одну строку
+
+        Args:
+            salary_from (str): Минимальная граница оклада
+            salary_to (str): Максимальная граница оклада
+            salary_gross (str): Оклад указан до вычета налогов
+            salary_currency (str): Индентификатор валюты
+
+        Returns:
+            (str): Строка с информацией об окладе
+        """
         currency = InputConnect.currency_rus[salary_currency]
         if salary_gross == 'Нет':
             is_gross = 'С вычетом налогов'
@@ -260,6 +272,16 @@ class InputConnect:
 
     @staticmethod
     def formatter(row):
+        """
+        Преобразует объект Vacancy в словарь размеченный с правильным
+        форматированием
+
+        Args:
+            row (Vacancy): Объект Vacancy
+
+        Returns:
+            (dict): Словарь с правильным форматированием
+        """
         new_dict = {}
         dict_names = list(CommonTools.rus_names.values())
         dict_names = dict_names[:7] + dict_names[10:]
@@ -275,7 +297,26 @@ class InputConnect:
 
     @staticmethod
     def do_filter(data, filter_list):
+        """
+        Метод производит фильтрацию данных
+
+        Args:
+            data (dict): Словарь с данными
+            filter_list (list): Параметры по которым производится фильтрация
+
+        Returns:
+            (list): Список с отфильтрованными значениями
+        """
         def for_filter(row):
+            """
+            Функция, используемая для объекта filter
+
+            Args:
+                row (dict): Словарь с данными
+
+            Returns:
+                (bool): True or False
+            """
             if filter_list == '':
                 return True
             parameter = filter_list.split(': ')
@@ -306,6 +347,18 @@ class InputConnect:
 
     @staticmethod
     def do_sort(data, sort, reverse):
+        """
+        Метод сортирует данные по параметру, а так же при необходимости
+        переварачивает список
+
+        Args:
+            data (list): Список с данными
+            sort (str): Параметр сортировки
+            reverse (str): Переварачивать список?
+
+        Returns:
+            (list): Отсортированный список
+        """
         is_reverse = False
         if reverse == 'Да':
             is_reverse = True
@@ -313,6 +366,15 @@ class InputConnect:
         experience_sort = {'Нет опыта': 0, 'От 1 года до 3 лет': 1, 'От 3 до 6 лет': 2, 'Более 6 лет': 3}
 
         def for_sort(row):
+            """
+            Функция, используемая для функции sorted
+
+            Args:
+                row (dict): Словарь с данными
+
+            Returns:
+                (int or str or datetime): Значение для сортировки
+            """
             if sort == 'Оклад':
                 salary = row['salary_from'].split()
                 currency = re.search(r'\((.*?)\)', row['salary_from']).group(1)
@@ -334,6 +396,18 @@ class InputConnect:
 
     @staticmethod
     def create_data(data, filter_list, sort, reverse):
+        """
+        Создает список, соответсвующий всем требованиям для печати
+
+        Args:
+            data (DataSet): Набор данных
+            filter_list (list): Список с данными для фильтрации
+            sort (str): Параметр сортировки
+            reverse (str): Переворачивать список?
+
+        Returns:
+            (list): Готовый список с данными
+        """
         result_list = []
         for i in range(len(data.vacancies_objects)):
             dictionary = InputConnect.formatter(data.vacancies_objects[i])
@@ -362,6 +436,17 @@ class InputConnect:
 
     @staticmethod
     def print_vacancies(data_set, filter_list, sort, reverse, indexes, fields_list):
+        """
+        Метод печатает данные в виде таблицы
+
+        Args:
+            data_set (DataSet): Набор данных
+            filter_list (list): Список с данными для фильтрации
+            sort (str): Параметр сортировки
+            reverse (str): Переворачивать список?
+            indexes (list): Диапазон вывода строк
+            fields_list (list): Список колонок, которые нужно вывести
+        """
         table = PrettyTable()
         rus_list = list(CommonTools.rus_names.keys())
         table.field_names = ['№'] + rus_list[:7] + rus_list[10:]

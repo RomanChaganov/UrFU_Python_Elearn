@@ -40,8 +40,8 @@ class Salary:
     Класс, который хранит поля, связанные с зарплатой
 
     Attributes:
-        salary_from (int): Минимальная граница оклада
-        salary_to (int): Максимальная граница оклада
+        salary_from (str): Минимальная граница оклада
+        salary_to (str): Максимальная граница оклада
         salary_currency (str): Индентификатор валюты
     """
 
@@ -108,7 +108,7 @@ class DataSet:
 
     Attributes:
         file_name (str): Имя файла
-        vacancies_objects (dict): Список из объектов Vacancy
+        vacancies_objects (list): Список из объектов Vacancy
     """
     def __init__(self, file_name):
         """
@@ -129,7 +129,7 @@ class DataSet:
             file_name (str): Имя входного файла
 
         Returns:
-            (dict, dict): Кортеж из списка названий колонок и
+            (list, list): Кортеж из списка названий колонок и
             списка непосредственно данных о вакансиях
         """
         reader_csv = csv.reader(open(file_name, encoding='utf_8_sig'))
@@ -151,7 +151,7 @@ class DataSet:
             file_name (str): Имя входного файла
 
         Returns:
-            (dict): Список с объектами Vacancy
+            (list): Список с объектами Vacancy
         """
         columns, vacancies = DataSet.read_csv(file_name)
         list_vacancies = []
@@ -195,7 +195,7 @@ class InputConnect:
         метод запускает формирование графиков и отчетов
 
         Args:
-            list_vacancies (dict): Список с данными о вакансиях
+            list_vacancies (list): Список с данными о вакансиях
             job_name (str): Вакансия, по которой будет вестись статистика
         """
         years = set()
@@ -272,7 +272,7 @@ class Report:
         методов класса
 
         Args:
-            data_list (dict): Список списков значений статистики
+            data_list (list): Список списков значений статистики
             job_name (str): Вакансия, по которой будет вестись статистика
         """
         Report.job_name = job_name
@@ -303,7 +303,7 @@ class Report:
 
         Args:
             sheet2: Объект вкладки WorkSheet
-            data_list (dict): Список списков значений статистики
+            data_list (list): Список списков значений статистики
         """
         heads2 = ['Город', 'Уровень зарплат', 'Город', 'Доля вакансий']
         Report.heads2 = heads2
