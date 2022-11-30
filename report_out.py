@@ -3,6 +3,7 @@ import math
 import matplotlib.pyplot as plt
 import numpy as np
 import pdfkit
+import doctest
 from datetime import datetime
 from openpyxl import Workbook
 from openpyxl.styles import Font, Side, Border
@@ -40,9 +41,9 @@ class Salary:
     Класс, который хранит поля, связанные с зарплатой
 
     Attributes:
-        salary_from (str): Минимальная граница оклада
-        salary_to (str): Максимальная граница оклада
-        salary_currency (str): Индентификатор валюты
+        salary_from (int): Минимальная граница оклада
+        salary_to (int): Максимальная граница оклада
+        salary_currency (str): Идентификатор валюты
     """
 
     def __init__(self, salary_from, salary_to, salary_currency):
@@ -51,9 +52,9 @@ class Salary:
         а так же поле, конвертированной в рубль иностранной валюты
 
         Args:
-            salary_from (str): Минимальная граница оклада
-            salary_to (str): Максимальная граница оклада
-            salary_currency (str): Индентификатор валюты
+            salary_from (str or float or int): Минимальная граница оклада
+            salary_to (str or float or int): Максимальная граница оклада
+            salary_currency (str or float or int): Индентификатор валюты
         """
         self.salary_from = salary_from
         self.salary_to = salary_to
@@ -67,9 +68,9 @@ class Salary:
         Метод переводит зарплату в иностранной ваюты в рубли
 
         Args:
-            salary_from (str): Минимальная граница оклада
-            salary_to (str): Максимальная граница оклада
-            salary_currency (str): Индентификатор валюты
+            salary_from (str or float or int): Минимальная граница оклада
+            salary_to (str or float or int): Максимальная граница оклада
+            salary_currency (str or float or int): Индентификатор валюты
 
         Returns:
             (int, int): Кортеж, в котором хранится минимальная и максимальная зарплата в рублях
