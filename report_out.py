@@ -41,9 +41,10 @@ class Salary:
     Класс, который хранит поля, связанные с зарплатой
 
     Attributes:
-        salary_from (int): Минимальная граница оклада
-        salary_to (int): Максимальная граница оклада
+        salary_from (int or float): Минимальная граница оклада
+        salary_to (int or float): Максимальная граница оклада
         salary_currency (str): Идентификатор валюты
+        salary_ru (int or float): Валюта в рублях
     """
 
     def __init__(self, salary_from, salary_to, salary_currency):
@@ -54,7 +55,18 @@ class Salary:
         Args:
             salary_from (str or float or int): Минимальная граница оклада
             salary_to (str or float or int): Максимальная граница оклада
-            salary_currency (str or float or int): Индентификатор валюты
+            salary_currency (str or float or int): Идентификатор валюты
+
+        >>> type(Salary(10000, 50000, 'RUR')).__name__
+        'Salary'
+        >>> Salary(10000, 50000, 'RUR').salary_from
+        10000
+        >>> Salary(10000, 50000, 'RUR').salary_to
+        50000
+        >>> Salary(10000, 50000, 'RUR').salary_currency
+        'RUR'
+        >>> Salary(10000, 50000, 'RUR').salary_ru
+        30000
         """
         self.salary_from = salary_from
         self.salary_to = salary_to
@@ -65,15 +77,36 @@ class Salary:
     @staticmethod
     def currency_translate(salary_from, salary_to, salary_currency):
         """
-        Метод переводит зарплату в иностранной ваюты в рубли
+        Метод переводит зарплату в иностранной валюты в рубли
 
         Args:
             salary_from (str or float or int): Минимальная граница оклада
             salary_to (str or float or int): Максимальная граница оклада
-            salary_currency (str or float or int): Индентификатор валюты
+            salary_currency (str or float or int): Идентификатор валюты
 
         Returns:
-            (int, int): Кортеж, в котором хранится минимальная и максимальная зарплата в рублях
+            (float, float): Кортеж, в котором хранится минимальная и максимальная зарплата в рублях
+
+        >>> Salary.currency_translate('10000', '50000', 'RUR')
+        (10000, 50000)
+        >>> Salary.currency_translate('10000', '50000', 'AZN')
+        (356800.0, 1784000.0)
+        >>> Salary.currency_translate('8000', '20000', 'BYR')
+        (191280.0, 478200.0)
+        >>> Salary.currency_translate('500', '3000', 'EUR')
+        (29950.0, 179700.0)
+        >>> Salary.currency_translate('1500', '6000', 'GEL')
+        (32609.999999999996, 130439.99999999999)
+        >>> Salary.currency_translate('50000', '150000', 'KGS')
+        (38000.0, 114000.0)
+        >>> Salary.currency_translate(100000, 300000, 'KZT')
+        (13000.0, 39000.0)
+        >>> Salary.currency_translate(15000.50, 30000, 'UAH')
+        (24600.0, 49200.0)
+        >>> Salary.currency_translate(2000, 4000, 'USD')
+        (121320.0, 242640.0)
+        >>> Salary.currency_translate(2000000, 4000000, 'UZS')
+        (11000.0, 22000.0)
         """
         salary_from = int(math.trunc(float(salary_from))) * currency_to_rub[salary_currency]
         salary_to = int(math.trunc(float(salary_to))) * currency_to_rub[salary_currency]
@@ -96,6 +129,22 @@ class Vacancy:
 
         Args:
             dictionary (dict): Словарь, содержащий данные о вакансии
+
+        >>> type(Vacancy({'name': 'IT аналитик', 'salary_from': '35000.0', 'salary_to': '45000.0', 'salary_currency': 'RUR',
+        'area_name': 'Санкт-Петербург', 'published_at': '2007-12-03T17:34:36+0300'})).__name__
+        'Vacancy'
+        >>> Vacancy({'name': 'IT аналитик', 'salary_from': '35000.0', 'salary_to': '45000.0', 'salary_currency': 'RUR',
+        'area_name': 'Санкт-Петербург', 'published_at': '2007-12-03T17:34:36+0300'}).name
+        'IT аналитик'
+        >>> type(Vacancy({'name': 'IT аналитик', 'salary_from': '35000.0', 'salary_to': '45000.0', 'salary_currency': 'RUR',
+        'area_name': 'Санкт-Петербург' , 'published_at': '2007-12-03T17:34:36+0300'}).salary).__name__
+        'Salary'
+        >>> Vacancy({'name': 'IT аналитик', 'salary_from': '35000.0', 'salary_to': '45000.0', 'salary_currency': 'RUR',
+        'area_name': 'Санкт-Петербург', 'published_at': '2007-12-03T17:34:36+0300'}).area_name
+        'Санкт-Петербург'
+        >>> Vacancy({'name': 'IT аналитик', 'salary_from': '35000.0', 'salary_to': '45000.0', 'salary_currency': 'RUR',
+        'area_name': 'Санкт-Петербург', 'published_at': '2007-12-03T17:34:36+0300'}).published_at
+        '2007-12-03T17:34:36+0300'
         """
         self.name = dictionary['name']
         self.salary = Salary(dictionary['salary_from'], dictionary['salary_to'], dictionary['salary_currency'])
@@ -258,7 +307,7 @@ class InputConnect:
 
 class Report:
     """
-    Класс отвечает за формирование графико и отчетов в виде xlsx, pdf
+    Класс отвечает за формирование графика и отчетов в виде xlsx, pdf
     """
     # Поля необходимые для метода generate_pdf
     heads1 = []
@@ -278,8 +327,8 @@ class Report:
         """
         Report.job_name = job_name
         Report.data_list = data_list
-        Report.generate_excel(data_list, job_name)
-        Report.generate_image(data_list, job_name)
+        Report.generate_excel()
+        Report.generate_image()
         Report.generate_pdf()
 
     @staticmethod

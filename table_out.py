@@ -54,8 +54,8 @@ class Salary:
     Класс, который хранит поля, связанные с зарплатой
 
     Attributes:
-        salary_from (int): Минимальная граница оклада
-        salary_to (int): Максимальная граница оклада
+        salary_from (int or float): Минимальная граница оклада
+        salary_to (int or float): Максимальная граница оклада
         salary_gross (int): Оклад указан до вычета налогов
         salary_currency (str): Идентификатор валюты
     """
@@ -71,7 +71,7 @@ class Salary:
             salary_from (str or float or int): Минимальная граница оклада
             salary_to (str or float or int): Максимальная граница оклада
             salary_gross (str or float or int): Оклад указан до вычета налогов
-            salary_currency (str): Индентификатор валюты
+            salary_currency (str): Идентификатор валюты
         """
         self.salary_from = salary_from
         self.salary_to = salary_to
@@ -81,7 +81,7 @@ class Salary:
     @staticmethod
     def currency_translate(salary_from, salary_to, salary_currency):
         """
-        Метод переводит зарплату в иностранной ваюты в рубли
+        Метод переводит зарплату в иностранной валюты в рубли
 
         Args:
             salary_from (str or float or int): Минимальная граница оклада
@@ -89,7 +89,7 @@ class Salary:
             salary_currency (str or float or int): Индентификатор валюты
 
         Returns:
-            (int, int): Кортеж, в котором хранится минимальная и максимальная зарплата в рублях
+            (float, float): Кортеж, в котором хранится минимальная и максимальная зарплата в рублях
         """
         salary_from = int(math.trunc(float(salary_from))) * Salary.currency_to_rub[salary_currency]
         salary_to = int(math.trunc(float(salary_to))) * Salary.currency_to_rub[salary_currency]
@@ -301,8 +301,8 @@ class InputConnect:
         Метод производит фильтрацию данных
 
         Args:
-            data (dict): Словарь с данными
-            filter_list (list): Параметры по которым производится фильтрация
+            data (list): Словарь с данными
+            filter_list (str): Параметры по которым производится фильтрация
 
         Returns:
             (list): Список с отфильтрованными значениями
