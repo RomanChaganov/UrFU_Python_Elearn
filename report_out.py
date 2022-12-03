@@ -130,19 +130,19 @@ class Vacancy:
         Args:
             dictionary (dict): Словарь, содержащий данные о вакансии
 
-        >>> type(Vacancy({'name': 'IT аналитик', 'salary_from': '35000.0', 'salary_to': '45000.0', 'salary_currency': 'RUR',
+        >>> type(Vacancy({'name': 'IT аналитик', 'salary_from': '35000.0', 'salary_to': '45000.0', 'salary_currency': 'RUR', \
         'area_name': 'Санкт-Петербург', 'published_at': '2007-12-03T17:34:36+0300'})).__name__
         'Vacancy'
-        >>> Vacancy({'name': 'IT аналитик', 'salary_from': '35000.0', 'salary_to': '45000.0', 'salary_currency': 'RUR',
+        >>> Vacancy({'name': 'IT аналитик', 'salary_from': '35000.0', 'salary_to': '45000.0', 'salary_currency': 'RUR', \
         'area_name': 'Санкт-Петербург', 'published_at': '2007-12-03T17:34:36+0300'}).name
         'IT аналитик'
-        >>> type(Vacancy({'name': 'IT аналитик', 'salary_from': '35000.0', 'salary_to': '45000.0', 'salary_currency': 'RUR',
+        >>> type(Vacancy({'name': 'IT аналитик', 'salary_from': '35000.0', 'salary_to': '45000.0', 'salary_currency': 'RUR', \
         'area_name': 'Санкт-Петербург' , 'published_at': '2007-12-03T17:34:36+0300'}).salary).__name__
         'Salary'
-        >>> Vacancy({'name': 'IT аналитик', 'salary_from': '35000.0', 'salary_to': '45000.0', 'salary_currency': 'RUR',
+        >>> Vacancy({'name': 'IT аналитик', 'salary_from': '35000.0', 'salary_to': '45000.0', 'salary_currency': 'RUR', \
         'area_name': 'Санкт-Петербург', 'published_at': '2007-12-03T17:34:36+0300'}).area_name
         'Санкт-Петербург'
-        >>> Vacancy({'name': 'IT аналитик', 'salary_from': '35000.0', 'salary_to': '45000.0', 'salary_currency': 'RUR',
+        >>> Vacancy({'name': 'IT аналитик', 'salary_from': '35000.0', 'salary_to': '45000.0', 'salary_currency': 'RUR', \
         'area_name': 'Санкт-Петербург', 'published_at': '2007-12-03T17:34:36+0300'}).published_at
         '2007-12-03T17:34:36+0300'
         """

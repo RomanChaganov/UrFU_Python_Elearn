@@ -223,7 +223,7 @@ class InputConnect:
         Метод получает входные данные
 
         Returns:
-            (str, str): Кортеж входных параметров
+            (str, str, str, str, list, list): Кортеж входных параметров
         """
         file_name = input('Введите название файла: ')
         parameter = input('Введите параметр фильтрации: ')
@@ -401,7 +401,7 @@ class InputConnect:
 
         Args:
             data (DataSet): Набор данных
-            filter_list (list): Список с данными для фильтрации
+            filter_list (str): Список с данными для фильтрации
             sort (str): Параметр сортировки
             reverse (str): Переворачивать список?
 
@@ -441,7 +441,7 @@ class InputConnect:
 
         Args:
             data_set (DataSet): Набор данных
-            filter_list (list): Список с данными для фильтрации
+            filter_list (str): Список с данными для фильтрации
             sort (str): Параметр сортировки
             reverse (str): Переворачивать список?
             indexes (list): Диапазон вывода строк
