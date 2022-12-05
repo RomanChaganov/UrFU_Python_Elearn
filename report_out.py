@@ -11,6 +11,21 @@ from openpyxl.styles.numbers import FORMAT_PERCENTAGE_00
 from jinja2 import Environment, FileSystemLoader
 
 
+def formatter_date(input_date):
+    """
+    Функия преобразует дату в нужный формат
+
+    Args:
+        input_date (str): Исходная данные
+
+    Returns:
+        (str): Дата в нужном формате
+    """
+    # return datetime.strptime(input_date, '%Y-%m-%dT%H:%M:%S%z').strftime('%Y')
+    return input_date[:4]
+    # input_date = input_date.split('-')
+    # return input_date[0]
+
 def exit_with_print(line):
     """
     Функция выводит строку и завершает программу
@@ -250,7 +265,7 @@ class InputConnect:
         """
         years = set()
         for vacancy in list_vacancies:
-            years.add(int(datetime.strptime(vacancy.published_at, '%Y-%m-%dT%H:%M:%S%z').strftime('%Y')))
+            years.add(int(formatter_date(vacancy.published_at)))
         years = sorted(list(years))
         years = list(range(min(years), max(years) + 1))
 
@@ -262,7 +277,7 @@ class InputConnect:
         vacs_dict = {}
 
         for vacancy in list_vacancies:
-            year = int(datetime.strptime(vacancy.published_at, '%Y-%m-%dT%H:%M:%S%z').strftime('%Y'))
+            year = int(formatter_date(vacancy.published_at))
             salary_by_years[year].append(vacancy.salary.salary_ru)
             vacs_by_years[year] += 1
             if job_name in vacancy.name:
@@ -329,7 +344,7 @@ class Report:
         Report.data_list = data_list
         Report.generate_excel()
         Report.generate_image()
-        Report.generate_pdf()
+        # Report.generate_pdf()
 
     @staticmethod
     def as_text(line):

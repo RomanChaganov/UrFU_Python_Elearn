@@ -6,6 +6,7 @@
 import report_out
 import table_out
 
+
 type_out = input('Введите данные для печати: ')
 if type_out == 'Вакансии':
     table_out.InputConnect()
