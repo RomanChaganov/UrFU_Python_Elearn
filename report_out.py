@@ -344,7 +344,7 @@ class Report:
         Report.data_list = data_list
         Report.generate_excel()
         Report.generate_image()
-        # Report.generate_pdf()
+        Report.generate_pdf()
 
     @staticmethod
     def as_text(line):
