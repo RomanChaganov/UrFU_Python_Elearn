@@ -3,16 +3,18 @@
 """
 
 import pandas as pd
-from report_out import formatter_date
+from report_out_old import formatter_date
 
-pd.set_option('expand_frame_repr', False)
 
-file = 'vacancies_by_year.csv'
-df = pd.read_csv(file)
+class SplitData:
+    def __init__(self, file_name):
+        pd.set_option('expand_frame_repr', False)
+        df = pd.read_csv(file_name)
+        df['years'] = df['published_at'].apply(formatter_date)
+        years = df['years'].unique()
 
-df['years'] = df['published_at'].apply(formatter_date)
-years = df['years'].unique()
+        for year in years:
+            data = df[df['years'] == year]
+            data.drop(columns='years').to_csv(rf'csv_files\part_{year}.csv', index=False)
 
-for year in years:
-    data = df[df['years'] == year]
-    data.drop(columns='years').to_csv(rf'csv_files\part_{year}.csv', index=False)
+SplitData('vacancies_by_year.csv')
