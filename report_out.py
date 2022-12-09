@@ -1,9 +1,12 @@
+import cProfile
 import multiprocessing
 import os
 import time
+from pstats import Stats, SortKey
+
 import numpy as np
 import pandas as pd
-from multiprocessing import Manager, Process, Pool
+from multiprocessing import Pool
 
 
 def formatter_date(input_date):
@@ -39,7 +42,6 @@ currency_to_rub = {
     "UZS": 0.0055,
 }
 
-job_name = ''
 
 # def prepare_data_from_year(file_name, job_name, data_list):
 #     df = pd.read_csv(file_name)
@@ -52,22 +54,19 @@ job_name = ''
 #                       mean_to_number(df[df['name'].str.contains(job_name)]['salary'].mean()),
 #                       len(df[df['name'].str.contains(job_name)])])
 
-def new_prepare_data(file_name):
+def new_prepare_data(file_name, job_name):
     df = pd.read_csv(file_name)
     df['salary_from'] = df['salary_currency'].map(currency_to_rub) * df['salary_from']
     df['salary_to'] = df['salary_currency'].map(currency_to_rub) * df['salary_to']
     df['salary'] = df[['salary_from', 'salary_to']].mean(axis=1)
     year = df['published_at'].values[0]
 
-
+    return [year, int(df['salary'].mean()), len(df),
+            mean_to_number(df[df['name'].str.contains(job_name)]['salary'].mean()),
+            len(df[df['name'].str.contains(job_name)])]
 
 
 class InputConnect:
-    salary_by_years = None
-    vacs_by_years = None
-    job_salary_by_years = None
-    job_count_by_years = None
-
     job_name = None
     file_name = None
 
@@ -82,9 +81,9 @@ class InputConnect:
 
         InputConnect.file_name, InputConnect.job_name = params
         pd.set_option('expand_frame_repr', False)
-        self.startime = time.time()
+        self.start_time = time.time()
         df = pd.read_csv(self.file_name)
-        self.print_data(df, self.startime)
+        self.print_data(df, self.start_time)
 
     @staticmethod
     def get_params():
@@ -95,8 +94,8 @@ class InputConnect:
             (str, str): Кортеж входных параметров
         """
         file_name = input('Введите название файла: ')
-        job_name = input('Введите название профессии: ')
-        return file_name, job_name
+        vac_name = input('Введите название профессии: ')
+        return file_name, vac_name
 
     @staticmethod
     def split_data(df):
@@ -127,24 +126,35 @@ class InputConnect:
         job_salary_by_years = {year: 0 for year in years}
         job_count_by_years = {year: 0 for year in years}
 
-
+        params = []
+        files = os.listdir('csv_files')
+        for file in files:
+            params.append((os.path.join('csv_files', file), InputConnect.job_name))
         with Pool() as p:
+            multiprocessing.freeze_support()
+            result_list = p.starmap(new_prepare_data, params)
 
-        # manager = Manager()
-        # multi_list = manager.list()
-        # process = []
-        # files = os.listdir('csv_files')
-        # multiprocessing.freeze_support()
-        # for file in files:
-        #     p = Process(target=prepare_data_from_year,
-        #                 args=(os.path.join('csv_files', file), InputConnect.job_name, multi_list))
-        #     p.start()
-        #     process.append(p)
+        for data in result_list:
+            year = data[0]
+            salary_by_years[year] = data[1]
+            vacs_by_years[year] = data[2]
+            job_salary_by_years[year] = data[3]
+            job_count_by_years[year] = data[4]
 
         # data_list = []
         # files = os.listdir('csv_files')
         # for file in files:
-        #     prepare_data_from_year(os.path.join('csv_files', file), InputConnect.job_name, data_list)
+        #     # prepare_data_from_year(os.path.join('csv_files', file), InputConnect.job_name, data_list)
+        #     data_list.append(new_prepare_data(os.path.join('csv_files', file), InputConnect.job_name))
+        #
+        # for data in data_list:
+        #     year = data[0]
+        #     salary_by_years[year] = data[1]
+        #     vacs_by_years[year] = data[2]
+        #     job_salary_by_years[year] = data[3]
+        #     job_count_by_years[year] = data[4]
+
+        finish_time = time.time()
 
         df['salary_from'] = df['salary_currency'].map(currency_to_rub) * df['salary_from']
         df['salary_to'] = df['salary_currency'].map(currency_to_rub) * df['salary_to']
@@ -164,8 +174,8 @@ class InputConnect:
             vacs_by_cities[city] = round((len(df[df['area_name'] == city]) / vacs_sum), 4)
             i += 1
 
-        for p in process:
-            p.join()
+        # for p in process:
+        #     p.join()
 
         # for data in data_list:
         #     year = data[0]
@@ -174,13 +184,6 @@ class InputConnect:
         #     job_salary_by_years[year] = data[3]
         #     job_count_by_years[year] = data[4]
 
-        for data in multi_list:
-            year = data[0]
-            salary_by_years[year] = data[1]
-            vacs_by_years[year] = data[2]
-            job_salary_by_years[year] = data[3]
-            job_count_by_years[year] = data[4]
-
         print('Динамика уровня зарплат по годам:', salary_by_years)
         print('Динамика количества вакансий по годам:', vacs_by_years)
         print('Динамика уровня зарплат по годам для выбранной профессии:', job_salary_by_years)
@@ -188,8 +191,11 @@ class InputConnect:
         print('Уровень зарплат по городам (в порядке убывания):', salary_by_cities)
         print('Доля вакансий по городам (в порядке убывания):', vacs_by_cities)
 
-        print('Суммарное время равно: ' + str((time.time() - startime)) + ' секунд')
+        print('Суммарное время равно: ' + str((finish_time - startime)) + ' секунд')
 
 
 if __name__ == '__main__':
+    # cProfile.run('InputConnect()', 'restats')
+    # p = Stats('restats')
+    # p.sort_stats(SortKey.TIME).print_stats(1)
     InputConnect()
