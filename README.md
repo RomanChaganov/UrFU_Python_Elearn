@@ -27,9 +27,18 @@
 
 ![Finish_measurement](https://github.com/RomanChaganov/UrFU_Python_Elearn/blob/main/image/finish_test.png)
 
-# Разделение данных и 
+# Разделение данных и паралелльные вычисления
 
 ## Разделение данных
 С помощью скрипта разделил исходный файл на файлы
 
 ![Data_split](https://github.com/RomanChaganov/UrFU_Python_Elearn/blob/main/image/data_from_years.png)
+
+## Многопроцессорность
+Замер времени работы программы проводился с помощью функции time().
+Для однопроцессорного режима время работы составила 14.27 секунд
+
+![Without_multiproc](https://github.com/RomanChaganov/UrFU_Python_Elearn/blob/main/image/without_multiproc.png)
+
+Многопроцессорность достигалась благодаря функции Pool().
+Время работы составила 13.57 секунд. Виден небольшой прирост.

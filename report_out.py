@@ -144,7 +144,6 @@ class InputConnect:
         # data_list = []
         # files = os.listdir('csv_files')
         # for file in files:
-        #     # prepare_data_from_year(os.path.join('csv_files', file), InputConnect.job_name, data_list)
         #     data_list.append(new_prepare_data(os.path.join('csv_files', file), InputConnect.job_name))
         #
         # for data in data_list:
