@@ -42,3 +42,5 @@
 
 Многопроцессорность достигалась благодаря функции Pool().
 Время работы составила 13.57 секунд. Виден небольшой прирост.
+
+![Multiprocc](https://github.com/RomanChaganov/UrFU_Python_Elearn/blob/main/image/multiproc.png)
