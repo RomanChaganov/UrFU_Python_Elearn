@@ -44,3 +44,8 @@
 Время работы составила 13.57 секунд. Виден небольшой прирост.
 
 ![Multiprocc](https://github.com/RomanChaganov/UrFU_Python_Elearn/blob/main/image/multiproc.png)
+
+С помощью асинхронности удалось сбить 1 милисекунду.
+Время работы составила 13.46 секунды.
+
+![Concurrent](https://github.com/RomanChaganov/UrFU_Python_Elearn/blob/main/image/concurrent.png)

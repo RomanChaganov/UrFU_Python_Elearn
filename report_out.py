@@ -3,7 +3,7 @@ import multiprocessing
 import os
 import time
 from pstats import Stats, SortKey
-
+import concurrent.futures as cf
 import numpy as np
 import pandas as pd
 from multiprocessing import Pool
@@ -54,7 +54,9 @@ currency_to_rub = {
 #                       mean_to_number(df[df['name'].str.contains(job_name)]['salary'].mean()),
 #                       len(df[df['name'].str.contains(job_name)])])
 
-def new_prepare_data(file_name, job_name):
+def new_prepare_data(args):
+    file_name = args[0]
+    job_name = args[1]
     df = pd.read_csv(file_name)
     df['salary_from'] = df['salary_currency'].map(currency_to_rub) * df['salary_from']
     df['salary_to'] = df['salary_currency'].map(currency_to_rub) * df['salary_to']
@@ -64,6 +66,10 @@ def new_prepare_data(file_name, job_name):
     return [year, int(df['salary'].mean()), len(df),
             mean_to_number(df[df['name'].str.contains(job_name)]['salary'].mean()),
             len(df[df['name'].str.contains(job_name)])]
+
+
+def cocncurrent_prepare(args):
+    return new_prepare_data(args[0], args[1])
 
 
 class InputConnect:
@@ -126,14 +132,21 @@ class InputConnect:
         job_salary_by_years = {year: 0 for year in years}
         job_count_by_years = {year: 0 for year in years}
 
-        params = []
+        args = []
         files = os.listdir('csv_files')
         for file in files:
-            params.append((os.path.join('csv_files', file), InputConnect.job_name))
-        with Pool() as p:
-            multiprocessing.freeze_support()
-            result_list = p.starmap(new_prepare_data, params)
+            args.append((os.path.join('csv_files', file), InputConnect.job_name))
+        with cf.ProcessPoolExecutor() as executor:
+            result_list = executor.map(new_prepare_data, args)
 
+        # params = []
+        # files = os.listdir('csv_files')
+        # for file in files:
+        #     params.append((os.path.join('csv_files', file), InputConnect.job_name))
+        # with Pool() as p:
+        #     multiprocessing.freeze_support()
+        #     result_list = p.starmap(new_prepare_data, params)
+        #
         for data in result_list:
             year = data[0]
             salary_by_years[year] = data[1]
