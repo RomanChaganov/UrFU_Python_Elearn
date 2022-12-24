@@ -45,7 +45,17 @@
 
 ![Multiprocc](https://github.com/RomanChaganov/UrFU_Python_Elearn/blob/main/image/multiproc.png)
 
-С помощью асинхронности удалось сбить 1 милисекунду.
+С помощью асинхронности удалось сбить 11 миллисекунд.
 Время работы составила 13.46 секунды.
 
 ![Concurrent](https://github.com/RomanChaganov/UrFU_Python_Elearn/blob/main/image/concurrent.png)
+
+# Получение валют 
+## Получение данных о валютах с сайта ЦБ РФ
+Получил данные о частотности валют
+
+![Frequency](https://github.com/RomanChaganov/UrFU_Python_Elearn/blob/main/image/frequency.png)
+
+Разделил полученные котировки по годам
+
+![Currency_data](https://github.com/RomanChaganov/UrFU_Python_Elearn/blob/main/image/split_currency_data.png)
