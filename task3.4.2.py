@@ -79,8 +79,8 @@ def create_report():
     print('Динамика количества вакансий по годам:', vacs_by_years)
     print('Динамика уровня зарплат по годам для выбранной профессии:', job_salary_by_years)
     print('Динамика количества вакансий по годам для выбранной профессии:', job_count_by_years)
-    # print('Уровень зарплат по городам (в порядке убывания):', salary_by_cities)
-    # print('Доля вакансий по городам (в порядке убывания):', vacs_by_cities)
+    print('Уровень зарплат по городам (в порядке убывания):', salary_by_cities)
+    print('Доля вакансий по городам (в порядке убывания):', vacs_by_cities)
 
     data_list = [salary_by_years, vacs_by_years, job_salary_by_years, job_count_by_years, salary_by_cities,
                  vacs_by_cities]
