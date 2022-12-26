@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 # from report_out_old import formatter_date
 
@@ -48,6 +49,10 @@ for year in range(2003, 2023):
         df_valute['Value'] = df_valute['Value'] / df_valute['Nominal']
         df_valute['date'] = f'{year}-{month:02}'
         df_valute = df_valute.pivot_table(index='date', columns='CharCode', values='Value', aggfunc='sum').rename(columns={'BYN': 'BYR'})
+        df_valute['UZS'] = np.NAN
+        df_valute['KGS'] = np.NAN
+        df_valute['AZN'] = np.NAN
+        df_valute['GEL'] = np.NAN
         valutes.append(df_valute)
         print(df_valute.head())
 

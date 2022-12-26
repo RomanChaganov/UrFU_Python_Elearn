@@ -17,13 +17,13 @@ def create_vacancies(file_name):
     df.salary_from = df[['salary_from', 'salary_to']].mean(axis=1)
     df['date'] = df.published_at.apply(lambda z: z[:7])
     df['salary_from'] = df.apply(
-        lambda x: float(round(x['salary_from'] * currency_data.at[x['date'], x['salary_currency']]))
-        if (x['salary_currency'] != 'RUR' and not np.isnan(x['salary_from']) and x['salary_currency'] in currency)
+        lambda x: float(x['salary_from'] * currency_data.at[x['date'], x['salary_currency']])
+        if (x['salary_currency'] != 'RUR' and not np.isnan(x['salary_from']))
         else x['salary_from'], axis=1)
 
     df = df.drop(['salary_to', 'date', 'salary_currency'], axis=1).rename(columns={'salary_from': 'salary'})
-    # df.head(100).to_csv('first100vacancies.csv', index=False)
-    df.to_csv('vacancies_new.csv', index=False)
+    df.head(100).to_csv('first100vacancies.csv', index=False)
+    # df.to_csv('vacancies_new.csv', index=False)
     print('Создание итогового файла по вакансиям')
 
 
