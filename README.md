@@ -59,3 +59,8 @@
 Разделил полученные котировки по годам
 
 ![Currency_data](https://github.com/RomanChaganov/UrFU_Python_Elearn/blob/main/image/split_currency_data.png)
+
+# База данных
+К заданию 3.5.2
+
+![DataBase](https://github.com/RomanChaganov/UrFU_Python_Elearn/blob/main/image/sqlite.png)
