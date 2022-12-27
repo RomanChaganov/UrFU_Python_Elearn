@@ -87,6 +87,7 @@ def create_report():
 
     print('Создание первых четырех словарей')
 
+    "3.4.3"
     area = df['area_name'].value_counts().to_dict()
     area = dict(sorted(area.items(), key=lambda x: x[1], reverse=True))
     vacs_sum = len(df)
@@ -98,11 +99,13 @@ def create_report():
         city = result_city[i]
         salary_by_cities[city] = mean_to_number(df[df['area_name'] == city]['salary'].mean())
         vacs_by_cities[city] = round((len(df[df['area_name'] == city]) / vacs_sum), 4)
+    "3.4.3/"
 
     print('Динамика уровня зарплат по годам:', salary_by_years)
     print('Динамика количества вакансий по годам:', vacs_by_years)
     print('Динамика уровня зарплат по годам для выбранной профессии:', job_salary_by_years)
     print('Динамика количества вакансий по годам для выбранной профессии:', job_count_by_years)
+    "3.4.3"
     print('Уровень зарплат по городам (в порядке убывания):', salary_by_cities)
     print('Доля вакансий по городам (в порядке убывания):', vacs_by_cities)
 
