@@ -10,7 +10,6 @@ def create_vacancies(file_name):
     currency_data = currency_data.set_index('date')
     print('Подгрузка файла по валютам')
     print(currency_data.head())
-    currency = list(currency_data.columns)
 
     df = pd.read_csv(file_name)
     print('Открытие файла по вакансиям')
@@ -22,8 +21,8 @@ def create_vacancies(file_name):
         else x['salary_from'], axis=1)
 
     df = df.drop(['salary_to', 'date', 'salary_currency'], axis=1).rename(columns={'salary_from': 'salary'})
-    df.head(100).to_csv('first100vacancies.csv', index=False)
-    # df.to_csv('vacancies_new.csv', index=False)
+    # df.head(100).to_csv('first100vacancies.csv', index=False)
+    df.to_csv('vacancies_new.csv', index=False)
     print('Создание итогового файла по вакансиям')
 
 

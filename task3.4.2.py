@@ -6,12 +6,26 @@ from jinja2 import Environment, FileSystemLoader
 
 
 def get_params():
+    """
+    Функция получает название файла и название профессии
+
+    Returns:
+        (str, str): Кортеж из названия файла и профессии
+    """
     file_name = input('Введите название файла: ')
     vac_name = input('Введите название профессии: ')
     return file_name, vac_name
 
 
 def mean_to_number(numb):
+    """
+    Функция переводит NAN в число
+    Args:
+        numb (float): Число или NAN
+
+    Returns:
+        (int): Либо ноль, либо целая часть от исходного числа
+    """
     if numb == np.NAN:
         return 0
     else:
@@ -19,6 +33,13 @@ def mean_to_number(numb):
 
 
 def report_pdf(data_list, job_name):
+    """
+    Функция генерирует PDF отчет
+
+    Args:
+        data_list (list): Список со всеми данными
+        job_name (list): Название вакансии
+    """
     salary_key = list(data_list[4])
     vacs_key = list(data_list[5])
     vacs_by_cities = [str('{0:.2%}'.format(float(x))).replace('.', ',') for x in list(data_list[5].values())]
@@ -41,6 +62,9 @@ def report_pdf(data_list, job_name):
 
 
 def create_report():
+    """
+        Функция создает отчетность по исходным данным
+    """
     file_name, job_name = get_params()
     create_vacancies(file_name)
     pd.set_option('expand_frame_repr', False)
