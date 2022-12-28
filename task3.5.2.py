@@ -38,7 +38,8 @@ def to_int(num):
 df = pd.read_csv('vacancies_dif_currencies.csv')
 print('Файл вакансий загружен')
 df.salary_from = df[['salary_from', 'salary_to']].mean(axis=1)
-df['published_at'] = df.published_at.apply(lambda z: z[:7])
+df['published_at'] = df.published_at.apply(lambda z: z[:10])
+df['date'] = df.published_at.apply(lambda z: z[:7])
 currency_to_num = {
     'BYR': 2, 'EUR': 3, 'KZT': 4, 'UAH': 5, 'USD': 6, 'UZS': 7, 'KGS': 8, 'AZN': 9, 'GEL': 10
 }
@@ -54,11 +55,11 @@ with sqlite3.connect('Chaganov.db') as con:
         published_at TEXT
         )''')
     df['salary_from'] = df.apply(
-        lambda x: to_int(float(x['salary_from'] * none_to_nan(cursor.execute(f'SELECT * FROM currency WHERE date = "{x["published_at"]}"').fetchone()[currency_to_num[x['salary_currency']]])))
+        lambda x: to_int(float(x['salary_from'] * none_to_nan(cursor.execute(f'SELECT * FROM currency WHERE date = "{x["date"]}"').fetchone()[currency_to_num[x['salary_currency']]])))
         if (x['salary_currency'] != 'RUR' and not np.isnan(x['salary_from']))
         else x['salary_from'], axis=1
     )
-    df = df.drop(['salary_to', 'salary_currency'], axis=1).rename(columns={'salary_from': 'salary'})
+    df = df.drop(['salary_to', 'date', 'salary_currency'], axis=1).rename(columns={'salary_from': 'salary'})
     df.to_sql(name='salary', con=con, if_exists='append', index=False, index_label=False)
 
     # cursor.execute('ALTER TABLE salary ADD COLUMN salary INTEGER')
