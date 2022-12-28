@@ -61,6 +61,15 @@
 ![Currency_data](https://github.com/RomanChaganov/UrFU_Python_Elearn/blob/main/image/split_currency_data.png)
 
 # База данных
-К заданию 3.5.2
+## К заданию 3.5.2
 
 ![DataBase](https://github.com/RomanChaganov/UrFU_Python_Elearn/blob/main/image/sqlite.png)
+
+## К заданию 3.5.3
+Скрин БД. Пришлось изменить прошлый скрипт, чтобы он сохранял дату, в формате нужном для strftime.
+
+![DB](https://github.com/RomanChaganov/UrFU_Python_Elearn/blob/main/image/db.png)
+
+Скрин кода и результата работы.
+
+![Code](https://github.com/RomanChaganov/UrFU_Python_Elearn/blob/main/image/code.png)
